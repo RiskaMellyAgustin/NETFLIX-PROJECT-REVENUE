@@ -14,12 +14,14 @@ A Django-based web system simulating the **Revenue Cycle** of a subscription-bas
 ---
 
 ## 👥 Team Members (Group 2)
-| Name                           
-|--------------------------------
-| Alysia Dapyaraka               
-| Jeny Fattahul Sisca Anjar Aeni|
-| **Riska Melly Agustin**       | 
-| Valencia Greace Simeone       |     |
+
+| Name                              | Role & Responsibility                                  |
+|-----------------------------------|--------------------------------------------------------|
+| Alysia Dapyaraka                  | 💡 Idea Generation, Brainstorming, & Concept Planning  |
+| Jeny Fattahul Sisca Anjar Aeni   | 🛠️ Admin Page UI Development & Admin Dashboard         |
+| **Riska Melly Agustin**          | 🔧 Backend Development & Customer/User Interface       |
+| Valencia Greace Simeone Damanaik | 🎨 System Design & UI/UX Flow                          |
+
 
 ---
 
@@ -81,15 +83,19 @@ In the digital era, businesses like Netflix rely on recurring revenue models. Ma
 | Admin | Full dashboard + customer data   |
 | User  | View own subscription & invoices |
 
-📂 Folder Structure
+## 📂 Folder Structure
 
+```text
 netflixproject/
-├── accounts/         # User login/register
-├── customerapp/      # Subscription logic
-├── adminapp/         # Admin dashboard & report
-├── templates/        # All frontend HTML
-├── static/           # CSS, JS, etc.
-└── manage.py
+├── accounts/         # User login & registration logic
+├── adminapp/         # Custom admin dashboard and reports
+├── customerapp/      # Customer-side subscription and invoices
+├── templates/        # HTML templates (shared across apps)
+├── static/           # Static files: CSS, JavaScript, images
+├── .env              # Environment variables (not tracked by Git)
+├── requirements.txt  # Python dependencies
+└── manage.py         # Django project entry point
+
 
 📢 Disclaimer
 This system is designed for academic simulation purposes and does not process real payments. It provides hands-on experience with real-world RCM concepts in a safe environment.
