@@ -1,9 +1,7 @@
 # 🎬 Netflix-Inspired Revenue Cycle Management System
 
 A Django-based web system simulating the **Revenue Cycle** of a subscription-based business like **Netflix**, developed for the Accounting Information System course at **President University**.
-
-> 📅 Submission Date: May 23, 2025  
-> 👨‍🏫 Lecturer: Mr. Muhamad Safiq  
+  
 > 📚 Course: Accounting Information System  
 > 👩‍💻 Faculty of Computer Science – Information System – Data Science 1
 
@@ -16,12 +14,12 @@ A Django-based web system simulating the **Revenue Cycle** of a subscription-bas
 ---
 
 ## 👥 Team Members (Group 2)
-| Name                           | Student ID        |
-|--------------------------------|-------------------|
-| Alysia Dapyaraka               | 012202300069      |
-| Jeny Fattahul Sisca Anjar Aeni| 012202300118      |
-| **Riska Melly Agustin**       | 012202300123      |
-| Valencia Greace Simeone       | 012202300134      |
+| Name                           
+|--------------------------------
+| Alysia Dapyaraka               
+| Jeny Fattahul Sisca Anjar Aeni|
+| **Riska Melly Agustin**       | 
+| Valencia Greace Simeone       |     |
 
 ---
 
@@ -75,8 +73,27 @@ In the digital era, businesses like Netflix rely on recurring revenue models. Ma
 | Deployment | Localhost (dev environment)  |
 
 ---
-
 ## 🏁 How to Run the Project
+
+## 🛡️ Access Roles
+| Role  | Access Rights                    |
+| ----- | -------------------------------- |
+| Admin | Full dashboard + customer data   |
+| User  | View own subscription & invoices |
+
+📂 Folder Structure
+
+netflixproject/
+├── accounts/         # User login/register
+├── customerapp/      # Subscription logic
+├── adminapp/         # Admin dashboard & report
+├── templates/        # All frontend HTML
+├── static/           # CSS, JS, etc.
+└── manage.py
+
+📢 Disclaimer
+This system is designed for academic simulation purposes and does not process real payments. It provides hands-on experience with real-world RCM concepts in a safe environment.
+
 
 ```bash
 # Clone the repository
