@@ -6,12 +6,10 @@ A Django-based web system simulating the **Revenue Cycle** of a subscription-bas
 > 👩‍💻 Faculty of Computer Science – Information System – Data Science 1
 
 ---
+## 🎬 Demo Preview
 
-## 📽️ Demo Video
+![Demo](demo_acc.gif)
 
-🔗 [Watch Project Demo](https://drive.google.com/drive/u/0/folders/1SAYRC4m_Jo5LJJuxbNE_Yuhmy9kgp2xZ)
-
----
 
 ## 👥 Team Members (Group 2)
 
