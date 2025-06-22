@@ -1,0 +1,85 @@
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - Netflix Project</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .animated-bg {
+      background: linear-gradient(-45deg, #0f0f0f, #1c1c1c, #2a2a2a, #000000);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+    }
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+    .glow {
+      text-shadow: 0 0 6px rgba(229, 21, 156, 0.7), 0 0 15px rgba(213, 138, 148, 0.7);
+    }
+    .button-glow {
+      box-shadow: 0 0 6px rgba(213, 138, 148, 0.7), 0 0 12px rgba(213, 138, 148, 0.7);
+      transition: all 0.3s ease;
+    }
+    .button-glow:hover {
+      box-shadow: 0 0 15px rgba(213, 138, 148, 1), 0 0 25px rgba(213, 138, 148, 1);
+    }
+  </style>
+</head>
+<body class="animated-bg text-white relative">
+  <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full -z-10"></canvas>
+
+  <div class="min-h-screen flex items-center justify-center px-4">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md z-10">
+      <h2 class="text-center text-3xl font-bold mb-6 glow">Create Account</h2>
+
+      <!-- ✅ Ini form yang benar -->
+      <form method="POST" action="">
+        {% csrf_token %}
+
+        <div>
+          {{ form.username.label_tag }}
+          {{ form.username|add_class:"w-full mt-1 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-pink-500" }}
+          {{ form.username.errors }}
+        </div>
+
+        <div class="mt-4">
+          {{ form.email.label_tag }}
+          {{ form.email|add_class:"w-full mt-1 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-pink-500" }}
+          {{ form.email.errors }}
+        </div>
+
+        <div class="mt-4">
+          {{ form.password1.label_tag }}
+          {{ form.password1|add_class:"w-full mt-1 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-pink-500" }}
+          {{ form.password1.errors }}
+        </div>
+
+        <div class="mt-4">
+          {{ form.password2.label_tag }}
+          {{ form.password2|add_class:"w-full mt-1 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-pink-500" }}
+          {{ form.password2.errors }}
+        </div>
+
+        {% comment %} <div class="mt-4">
+          {{ form.role.label_tag }}
+          {{ form.role|add_class:"w-full mt-1 p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-pink-500" }}
+          {{ form.role.errors }}
+        </div> {% endcomment %}
+
+        <button type="submit" class="mt-6 w-full bg-pink-500 text-white px-4 py-2 rounded button-glow hover:bg-pink-600">
+          Sign Up
+        </button>
+      </form>
+
+      <p class="mt-4 text-center text-sm">
+        Already have an account?
+        <a href="/login" class="text-pink-400 hover:underline">Log In</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

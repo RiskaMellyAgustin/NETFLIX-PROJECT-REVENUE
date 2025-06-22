@@ -1,0 +1,116 @@
+{% load dict_filters %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Users</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{% static 'adminapp/css/mystyle.css' %}">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #0f1b36;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <h1>Revenue Cycle</h1>
+    </div>
+    
+    <div class="sidebar">
+    <ul>
+        <li class="{% if 'dashboard' in request.path %}active{% endif %}">
+        <a href="{% url 'admin_dashboard' %}">
+            <i data-lucide="layout-dashboard" class="icon"></i> Dashboard
+        </a>
+        </li>
+        <li class="{% if 'user' in request.path %}active{% endif %}">
+        <a href="{% url 'user_list' %}">
+            <i data-lucide="user" class="icon"></i> Customer
+        </a>
+        </li>
+        <li class="{% if 'subscription' in request.path %}active{% endif %}">
+        <a href="{% url 'subscription_list' %}">
+            <i data-lucide="package" class="icon"></i> Subscription
+        </a>
+        </li>
+               <li class="{% if 'billing_list' in request.path %}active{% endif %}">
+            <a href="{% url 'billing_list' %}">
+                <i data-lucide="credit-card" class="icon"></i> Billing
+            </a>
+        </li>
+        <li class="{% if 'report' in request.path %}active{% endif %}">
+        <a href="{% url 'billing_report' %}">
+            <i data-lucide="bar-chart-2" class="icon"></i> Report
+        </a>
+        </li>
+        <li>
+        <a href="{% url 'logout' %}">
+            <i data-lucide="log-out" class="icon"></i> Logout
+        </a>
+        </li>
+    </ul>
+    </div>
+    
+    <div class="main-content">
+        <form method="get" action="" class="search-form" style="margin-bottom: 20px; display:flex; gap:8px; align-items:center;">
+  <input
+    type="text"
+    name="q"
+    placeholder="Search by exact Username or Email"
+    value="{{ request.GET.q|default:'' }}"
+    style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;"
+  />
+  <button type="submit" style="padding: 8px 12px; background-color:#0f1b36; color:white; border:none; border-radius:4px; cursor:pointer;">
+    Search
+  </button>
+</form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Plan ID</th>
+                    <th>Created At</th>
+                    <th>Is Active</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    {% with sub=user_subscriptions|dict_get:user.id %}
+                        <td>{% if sub %}{{ sub.plan_id }}{% else %}-{% endif %}</td>
+                        <td>{% if sub %}{{ sub.created_at|date:"Y-m-d H:i" }}{% else %}-{% endif %}</td>
+                    {% endwith %}
+                    <td>{{ user.is_active }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

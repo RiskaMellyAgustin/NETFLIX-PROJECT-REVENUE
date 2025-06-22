@@ -1,0 +1,215 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <title>Subscription Page</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'adminapp/css/mystyle.css' %}">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-bottom: 40px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        table thead {
+            background-color: #0f1b36;
+            color: white;
+        }
+
+        table th, table td {
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+
+        .btn {
+            background-color: #0f1b36;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-right: 5px;
+        }
+
+        .btn:hover {
+            background-color: #1d325f;
+        }
+
+        canvas {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            display: block;
+        }
+        
+        table tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+
+        table th, table td {
+            font-size: 13px;
+        }
+        td.center {
+            text-align: center;
+        }
+        .badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: white;
+            display: inline-block;
+        }
+        .badge-paid { background-color: #1cc88a; }
+        .badge-pending { background-color: #f6c23e; }
+        .badge-failed { background-color: #e74a3b; }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <h1>Revenue Cycle</h1>
+    </div>
+    <div class="sidebar">
+        <ul>
+            <li class="{% if 'dashboard' in request.path %}active{% endif %}">
+                <a href="{% url 'admin_dashboard' %}">
+                    <i data-lucide="layout-dashboard" class="icon"></i> Dashboard
+                </a>
+            </li>
+            <li class="{% if 'user' in request.path %}active{% endif %}">
+                <a href="{% url 'user_list' %}">
+                    <i data-lucide="user" class="icon"></i> Customer
+                </a>
+            </li>
+            <li class="{% if 'subscription' in request.path %}active{% endif %}">
+                <a href="{% url 'subscription_list' %}">
+                    <i data-lucide="package" class="icon"></i> Subscription
+                </a>
+            </li>
+                   <li class="{% if 'billing_list' in request.path %}active{% endif %}">
+            <a href="{% url 'billing_list' %}">
+                <i data-lucide="credit-card" class="icon"></i> Billing
+            </a>
+        </li>
+            <li class="{% if 'report' in request.path %}active{% endif %}">
+                <a href="{% url 'billing_report' %}">
+                    <i data-lucide="bar-chart-2" class="icon"></i> Report
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'logout' %}">
+                    <i data-lucide="log-out" class="icon"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <!-- Summary Cards -->
+        <div class="summary">
+            {% for plan in plan_counts %}
+            <div class="summary-card">
+                <h3>{{ plan.plan__name }}</h3>
+                <p>{{ plan.count }} customer</p>
+            </div>
+            {% endfor %}
+            <div class="summary-card">
+                <h3>Total Active Subscription</h3>
+                <p>{{ active_count }}</p>
+            </div>
+            <div class="summary-card">
+                <h3>Total Inactive Subscription</h3>
+                <p>{{ inactive_count }}</p>
+            </div>
+        </div>
+
+        <!-- Pie Chart -->
+        <canvas id="planPieChart" width="400" height="400"></canvas>
+
+        <!-- Tabel Subscription -->
+        <table>
+            <thead>
+                <tr>
+                    <th class="center">Order ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Plan</th>
+                    <th>Payment Method</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th class="center">Active Duration (month)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in subscriptions %}
+                <tr>
+                    <td class="center">{{ sub.order_id }}</td>
+                    <td>{{ sub.user.username }}</td>
+                    <td>{{ sub.user.email }}</td>
+                    <td>{{ sub.plan.name }}</td>
+                    <td>{{ sub.payment_method|default:"-" }}</td>
+                    <td>
+                        {% if sub.status == "paid" %}
+                            <span class="badge badge-paid">Paid</span>
+                        {% elif sub.status == "pending" %}
+                            <span class="badge badge-pending">Pending</span>
+                        {% elif sub.status == "failed" %}
+                            <span class="badge badge-failed">Failed</span>
+                        {% else %}
+                            {{ sub.status|default:"-" }}
+                        {% endif %}
+                    </td>
+                    <td>{{ sub.created_at|date:"Y-m-d H:i" }}</td>
+                    <td>{{ sub.get_active_duration_display }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="center">No subscription data.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const ctx = document.getElementById('planPieChart').getContext('2d');
+        const pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: [{% for plan in plan_counts %}'{{ plan.plan__name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Jumlah Plan',
+                    data: [{% for plan in plan_counts %}{{ plan.count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: [
+                        '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'
+                    ],
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Subscription Plan Distribution'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

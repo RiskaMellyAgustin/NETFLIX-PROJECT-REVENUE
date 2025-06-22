@@ -1,0 +1,76 @@
+{% load humanize %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Subscription Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0f0f1a;
+            color: #ffffff;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #1a1a2e;
+            padding: 30px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        h1 {
+            color: #ff69b4;
+        }
+
+        .invoice {
+            margin-top: 20px;
+            text-align: left;
+            background-color: #2a2a40;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .buttons {
+            margin-top: 30px;
+        }
+
+        button, a.button-link {
+            background-color: #ff69b4;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        a.button-link:hover, button:hover {
+            background-color: #ff85c1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Payment Confirmed</h1>
+        <p>Your subscription has been successfully processed.</p>
+
+        <div class="invoice">
+            <h2>Invoice Details</h2>
+            <p><strong>Order ID:</strong> {{ subscription.order_id }}</p>
+            <p><strong>Plan:</strong> {{ subscription.plan.name }}</p>
+            <p><strong>Price:</strong> IDR {{ subscription.total_price|floatformat:2|intcomma }}</p>
+            <p><strong>Payment Method:</strong> {{ subscription.get_payment_method_display }}</p>
+            <p><strong>Status:</strong> <span style="color: lightgreen;">{{ subscription.status }}</span></p>
+            <p><strong>Date:</strong> {{ subscription.created_at|date:"d M Y H:i" }}</p>
+        </div>
+
+        <div class="buttons">
+            {# <a href="{% url 'print_invoice' subscription.id %}" class="button-link" target="_blank">🧾 Cetak Invoice</a> #}
+            <a href="{% url 'index' %}" class="button-link">Back to Home Page</a>
+        </div>
+    </div>
+</body>
+</html>

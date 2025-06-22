@@ -1,0 +1,123 @@
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Subscribe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glow {
+      text-shadow: 0 0 6px rgba(213, 138, 148, 0.7), 0 0 15px rgba(213, 138, 148, 0.7);
+    }
+    .button-glow {
+      box-shadow: 0 0 6px rgba(213, 138, 148, 0.7), 0 0 12px rgba(213, 138, 148, 0.7);
+    }
+    .button-glow:hover {
+      box-shadow: 0 0 15px rgba(213, 138, 148, 1), 0 0 25px rgba(213, 138, 148, 1);
+    }
+  </style>
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col justify-center items-center px-6 py-12">
+  <div class="w-full max-w-xl bg-gray-900 p-8 rounded-lg shadow-lg">
+    <h1 class="text-3xl font-bold text-pink-500 mb-6 text-center glow">Subscribe to a Plan</h1>
+
+    <form method="POST" action="{% url 'subscribe_page' %}" id="subscribeForm">
+      {% csrf_token %}
+      
+      <!-- Select Plan -->
+      <div class="mb-4">
+        <label for="plan_id" class="block text-sm font-medium text-gray-200 mb-2">Select a Plan</label>
+        <select name="plan_id" id="plan_id" class="w-full bg-gray-800 text-white px-4 py-2 rounded" onchange="updatePrice()" required>
+          {% for plan in plans %}
+            <option value="{{ plan.id }}" data-price="{{ plan.price }}">{{ plan.name }} - IDR {{ plan.price|intcomma }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Select Duration -->
+      <div class="mb-4">
+        <label for="duration" class="block text-sm font-medium text-gray-200 mb-2">Select Duration</label>
+        <select name="duration" id="duration" class="w-full bg-gray-800 text-white px-4 py-2 rounded" onchange="calculateTotal()" required>
+          <option value="month" selected>Per Month</option>
+          <option value="year">Per Year</option>
+          {% comment %} <option value="year">Per Year (Discount 10%)</option> {% endcomment %}
+        </select>
+      </div>
+
+      <!-- Price Display -->
+      <div class="mb-4 text-gray-200">
+        <p>Price per month: <span id="price" class="font-semibold">IDR 0</span></p>
+        <p>Total price: <span id="total-price" class="font-bold text-pink-400 text-lg">IDR 0</span></p>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="mb-6">
+        <label for="payment_method" class="block text-sm font-medium text-gray-200 mb-2">Payment Method</label>
+        <select name="payment_method" id="payment_method" class="w-full bg-gray-800 text-white px-4 py-2 rounded" required>
+          <option value="" disabled selected>Choose a Payment</option>
+          <option value="bank_transfer">Bank Transfer</option>
+          <option value="ewallet">e-Wallet/Gopay/Dana/ShopeePay</option>
+          <option value="credit">Credit Card</option>
+        </select>
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="bg-pink-500 text-white px-6 py-2 rounded button-glow hover:bg-pink-600">Submit Subscription</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const planSelect = document.getElementById('plan_id');
+    const durationSelect = document.getElementById('duration');
+    const priceEl = document.getElementById('price');
+    const totalPriceEl = document.getElementById('total-price');
+    const form = document.getElementById('subscribeForm');
+
+    function updatePrice() {
+      const selectedOption = planSelect.options[planSelect.selectedIndex];
+      const pricePerMonth = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+      priceEl.innerText = pricePerMonth.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+      calculateTotal();
+    }
+
+    function calculateTotal() {
+      const selectedOption = planSelect.options[planSelect.selectedIndex];
+      const pricePerMonth = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+      const duration = durationSelect.value;
+      let total = pricePerMonth;
+
+      if (duration === 'year') {
+        total = pricePerMonth * 12 * 0.9; // 10% discount
+      } else {
+        total = pricePerMonth;
+      }
+      totalPriceEl.innerText = total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+    }
+
+    // Initialize harga saat halaman load
+    document.addEventListener('DOMContentLoaded', () => {
+      updatePrice();
+    });
+
+    // Optional: Simple form validation before submit
+    form.addEventListener('submit', (e) => {
+      if (!planSelect.value) {
+        alert('Please select a plan!');
+        e.preventDefault();
+      }
+      if (!durationSelect.value) {
+        alert('Please select duration!');
+        e.preventDefault();
+      }
+      const paymentMethod = document.getElementById('payment_method');
+      if (!paymentMethod.value) {
+        alert('Please select a payment method!');
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>

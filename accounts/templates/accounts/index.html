@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landing Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // JavaScript for Smooth Scroll
+      document.addEventListener('DOMContentLoaded', function () {
+        const smoothScrollLinks = document.querySelectorAll('a[href^="#"]')
+      
+        smoothScrollLinks.forEach((link) => {
+          link.addEventListener('click', function (e) {
+            e.preventDefault()
+            const targetId = this.getAttribute('href').substring(1)
+            const targetElement = document.getElementById(targetId)
+      
+            window.scrollTo({
+              top: targetElement.offsetTop - 60, // Offset for fixed navbar
+              behavior: 'smooth'
+            })
+          })
+        })
+      })
+    </script>
+    <style>
+      /* Custom pink glow effect */
+      .glow {
+        text-shadow: 0 0 6px rgba(213, 138, 148, 0.7), 0 0 15px rgba(213, 138, 148, 0.7);
+      }
+      .button-glow {
+        box-shadow: 0 0 6px rgba(213, 138, 148, 0.7), 0 0 12px rgba(213, 138, 148, 0.7);
+      }
+      .button-glow:hover {
+        box-shadow: 0 0 15px rgba(213, 138, 148, 1), 0 0 25px rgba(213, 138, 148, 1);
+      }
+      .nav-link:hover {
+        color: #d58a94; /* Glow effect for links */
+        text-shadow: 0 0 10px rgba(213, 138, 148, 0.8), 0 0 20px rgba(213, 138, 148, 1);
+      }
+      
+      /* Custom glow for plan cards when clicked */
+      .plan-card:hover {
+        box-shadow: 0 0 15px rgba(213, 138, 148, 0.8), 0 0 30px rgba(213, 138, 148, 1);
+      }
+      
+      .plan-card:active {
+        box-shadow: 0 0 15px rgba(213, 138, 148, 0.9), 0 0 30px rgba(213, 138, 148, 1);
+      }
+    </style>
+  </head>
+  <body class="bg-black text-gray-200">
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 bg-black shadow-md">
+      <div class="container mx-auto flex justify-between items-center px-6 py-4">
+        <h1 class="text-2xl font-bold text-pink-500 glow">BrandName</h1>
+        <ul class="flex gap-6">
+          <li>
+            <a href="#home" class="nav-link font-medium">Home</a>
+          </li>
+          <li>
+            <a href="#plans" class="nav-link font-medium">Plans</a>
+          </li>
+          <li>
+            <a href="{% url 'login' %}" class="nav-link font-medium text-white hover:text-pink-500">Login</a>
+          </li>
+          <li>
+            <a href="{% url 'register' %}" class="nav-link font-medium text-white hover:text-pink-500">Sign Up</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-32 pb-20 bg-black">
+      <div class="container mx-auto text-center">
+        <h2 class="text-4xl font-bold mb-4 text-white glow">Welcome to Our Platform</h2>
+        <p class="text-lg text-gray-300">Get started with our services today!</p>
+        <a href="#plans" class="mt-6 inline-block bg-pink-500 text-white px-6 py-3 rounded button-glow hover:bg-pink-600">See Plans</a>
+      </div>
+    </section>
+    <!-- Plan Section -->
+    <section id="plans" class="py-20 bg-black">
+      <div class="container mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-10 text-white glow">Choose the plan that's right for you</h2>
+        <div class="grid md:grid-cols-4 gap-6">
+          <!-- Mobile Plan -->
+          <div class="plan-card bg-gray-800 p-6 rounded shadow-lg hover:shadow-2xl">
+            <h3 class="text-xl font-semibold mb-2 text-pink-400">Mobile</h3>
+            <p class="text-gray-300 mb-2">IDR 54,000 / month</p>
+            <ul class="text-left text-gray-300 text-sm leading-6 mb-4">
+              <li>
+                <strong>Video quality:</strong> Fair
+              </li>
+              <li>
+                <strong>Resolution:</strong> 480p
+              </li>
+              <li>
+                <strong>Devices:</strong> Mobile phone, tablet
+              </li>
+              <li>
+                <strong>Simultaneous streams:</strong> 1
+              </li>
+              <li>
+                <strong>Downloads:</strong> 1 device
+              </li>
+            </ul>
+            <a href="{% url 'register' %}"><button class="bg-pink-500 text-white px-4 py-2 rounded button-glow hover:bg-pink-600">Subscribe</button></a>
+ 
+          </div>
+
+          <!-- Basic Plan -->
+          <div class="plan-card bg-gray-800 p-6 rounded shadow-lg hover:shadow-2xl">
+            <h3 class="text-xl font-semibold mb-2 text-pink-400">Basic</h3>
+            <p class="text-gray-300 mb-2">IDR 65,000 / month</p>
+            <ul class="text-left text-gray-300 text-sm leading-6 mb-4">
+              <li>
+                <strong>Video quality:</strong> Good
+              </li>
+              <li>
+                <strong>Resolution:</strong> 720p (HD)
+              </li>
+              <li>
+                <strong>Devices:</strong> TV, computer, mobile phone, tablet
+              </li>
+              <li>
+                <strong>Simultaneous streams:</strong> 1
+              </li>
+              <li>
+                <strong>Downloads:</strong> 1 device
+              </li>
+            </ul>
+            <a href="{% url 'register' %}"><button class="bg-pink-500 text-white px-4 py-2 rounded button-glow hover:bg-pink-600">Subscribe</button></a>
+
+          </div>
+
+          <!-- Standard Plan -->
+          <div class="plan-card bg-gray-800 p-6 rounded shadow-lg hover:shadow-2xl">
+            <h3 class="text-xl font-semibold mb-2 text-pink-400">Standard</h3>
+            <p class="text-gray-300 mb-2">IDR 120,000 / month</p>
+            <ul class="text-left text-gray-300 text-sm leading-6 mb-4">
+              <li>
+                <strong>Video quality:</strong> Great
+              </li>
+              <li>
+                <strong>Resolution:</strong> 1080p (Full HD)
+              </li>
+              <li>
+                <strong>Devices:</strong> TV, computer, mobile phone, tablet
+              </li>
+              <li>
+                <strong>Simultaneous streams:</strong> 2
+              </li>
+              <li>
+                <strong>Downloads:</strong> 2 devices
+              </li>
+            </ul>
+            <a href="{% url 'register' %}"><button class="bg-pink-500 text-white px-4 py-2 rounded button-glow hover:bg-pink-600">Subscribe</button></a>
+
+          </div>
+
+          <!-- Premium Plan -->
+          <div class="plan-card bg-gray-800 p-6 rounded shadow-lg hover:shadow-2xl border-2 border-pink-500">
+            <h3 class="text-xl font-semibold mb-2 text-pink-400">Premium <span class="text-xs bg-pink-600 text-white px-2 py-1 rounded ml-2">Most Popular</span></h3>
+            <p class="text-gray-300 mb-2">IDR 186,000 / month</p>
+            <ul class="text-left text-gray-300 text-sm leading-6 mb-4">
+              <li>
+                <strong>Video quality:</strong> Best
+              </li>
+              <li>
+                <strong>Resolution:</strong> 4K (Ultra HD) + HDR
+              </li>
+              <li>
+                <strong>Audio:</strong> Spatial Audio included
+              </li>
+              <li>
+                <strong>Devices:</strong> TV, computer, mobile phone, tablet
+              </li>
+              <li>
+                <strong>Simultaneous streams:</strong> 4
+              </li>
+              <li>
+                <strong>Downloads:</strong> 6 devices
+              </li>
+            </ul>
+            <a href="{% url 'register' %}"><button class="bg-pink-500 text-white px-4 py-2 rounded button-glow hover:bg-pink-600">Subscribe</button></a>
+            
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-black text-white py-6 text-center">
+      <p>&copy; 2025 BrandName. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

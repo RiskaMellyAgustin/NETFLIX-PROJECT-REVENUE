@@ -1,0 +1,21 @@
+{% extends "adminapp/base.html" %}
+{% block content %}
+<h1>Invoice Detail - ID {{ invoice.id }}</h1>
+<p>User: {{ invoice.user.username }}</p>
+<p>Plan: {{ invoice.plan.name }}</p>
+<p>Billing Period: {{ invoice.billing_period_start }} - {{ invoice.billing_period_end }}</p>
+<p>Amount Charged: IDR {{ invoice.amount_charged }}</p>
+<p>Tax: IDR {{ invoice.tax }}</p>
+<p>Discount: IDR {{ invoice.discount }}</p>
+<p><strong>Total Due: IDR {{ invoice.total_due }}</strong></p>
+<p>Status: {{ invoice.status }}</p>
+<p>Payment Method: {{ invoice.payment_method }}</p>
+<p>Auto Renewal: {{ invoice.auto_renewal|yesno:"Yes,No" }}</p>
+<p>Created At: {{ invoice.created_at }}</p>
+<p>Last Updated: {{ invoice.updated_at }}</p>
+<p>Transaction ID: {{ invoice.transaction_id }}</p>
+<p>Notes: {{ invoice.notes }}</p>
+
+<!-- Link untuk download PDF invoice bisa ditambahkan di sini -->
+<a href="#">Download Invoice PDF</a>
+{% endblock %}

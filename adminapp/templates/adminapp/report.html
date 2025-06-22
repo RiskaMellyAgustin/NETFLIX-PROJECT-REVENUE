@@ -1,0 +1,242 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Billing Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{{ request.build_absolute_uri }}/static/adminapp/css/mystyle.css">
+    <link rel="stylesheet" href="{% static 'adminapp/css/mystyle.css' %}">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-bottom: 20px;
+            background-color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        table thead {
+            background-color: #0f1b36;
+            color: white;
+        }
+
+        table th, table td {
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .summary-card h3 {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .summary-card p {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0f1b36;
+            margin: 0;
+        }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: white;
+            display: inline-block;
+        }
+        .badge-paid { background-color: #1cc88a; }
+        .badge-unpaid { background-color: #f6c23e; }
+        .badge-cancelled { background-color: #e74a3b; }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <h1>Revenue Cycle</h1>
+    </div>
+    
+    <div class="sidebar">
+        <ul>
+            <li class="{% if 'dashboard' in request.path %}{% endif %}">
+            <a href="{% url 'admin_dashboard' %}">
+                <i data-lucide="layout-dashboard" class="icon"></i> Dashboard
+            </a>
+            </li>
+            <li class="{% if 'user' in request.path %}active{% endif %}">
+                <a href="{% url 'user_list' %}">
+                    <i data-lucide="user" class="icon"></i> Customer
+                </a>
+            </li>
+            <li class="{% if 'subscription' in request.path %}active{% endif %}">
+                <a href="{% url 'subscription_list' %}">
+                    <i data-lucide="package" class="icon"></i> Subscription
+                </a>
+            </li>
+                   <li class="{% if 'billing_list' in request.path %}active{% endif %}">
+            <a href="{% url 'billing_list' %}">
+                <i data-lucide="credit-card" class="icon"></i> Billing
+            </a>
+        </li>
+            <li class="{% if 'report' in request.path %}active{% endif %}">
+            <a href="{% url 'billing_report' %}">
+                <i data-lucide="bar-chart-2" class="icon"></i> Report
+            </a>
+            </li>
+            <li>
+                <a href="{% url 'logout' %}">
+                    <i data-lucide="log-out" class="icon"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <!-- Date Filter -->
+         <div style="margin-bottom: 20px;">
+    {% comment %} <a href="{#  #}?start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}" class="btn" style="background-color: #0f1b36; color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none;"> {% endcomment %}
+        <i data-lucide="download" class="icon" style="margin-right: 5px;"></i> Download PDF
+    </a>
+</div>
+
+        <div class="card" style="margin-bottom: 20px;">
+            <h2>Filter Report</h2>
+            <form method="get">
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <label>Start Date</label>
+                        <input type="date" name="start_date" class="form-control" value="{{ request.GET.start_date }}">
+                    </div>
+                    <div>
+                        <label>End Date</label>
+                        <input type="date" name="end_date" class="form-control" value="{{ request.GET.end_date }}">
+                    </div>
+                    <div style="align-self: flex-end;">
+                        <button type="submit" class="btn">Apply Filter</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid">
+            <div class="summary-card">
+                <h3>Total Revenue</h3>
+                <p>IDR {{ total_revenue|floatformat:0 }}</p>
+            </div>
+            <div class="summary-card">
+                <h3>Paid Subscriptions</h3>
+                <p>{{ paid_count }}</p>
+            </div>
+            <div class="summary-card">
+                <h3>Unpaid Subscriptions</h3>
+                <p>{{ unpaid_count }}</p>
+            </div>
+            <div class="summary-card">
+                <h3>Average Revenue per User</h3>
+                <p>IDR {{ arpu|floatformat:0 }}</p>
+            </div>
+        </div>
+
+        <!-- Revenue Chart -->
+        <div class="card">
+            <h2>Monthly Revenue</h2>
+            <canvas id="revenueChart"></canvas>
+        </div>
+
+        <!-- Transaction Details -->
+        <div class="card">
+            <h2>Recent Transactions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Invoice ID</th>
+                        <th>User</th>
+                        <th>Plan</th>
+                        <th>Amount</th>
+                        <th>Payment Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in recent_transactions %}
+                    <tr>
+                        <td>{{ transaction.order_id }}</td>
+                        <td>{{ transaction.user.username }}</td>
+                        <td>{{ transaction.plan.name }}</td>
+                        <td>IDR {{ transaction.total_price|floatformat:0 }}</td>
+                        <td>{{ transaction.created_at|date:"Y-m-d" }}</td>
+                        <td>
+                            {% if transaction.status == 'paid' %}
+                                <span class="badge badge-paid">Paid</span>
+                            {% elif transaction.status == 'unpaid' %}
+                                <span class="badge badge-unpaid">Unpaid</span>
+                            {% else %}
+                                <span class="badge badge-cancelled">Cancelled</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">No transactions found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Revenue Chart
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ chart_labels|safe }},
+                datasets: [{
+                    label: 'Revenue (IDR)',
+                    data: {{ chart_data|safe }},
+                    backgroundColor: 'rgba(15, 27, 54, 0.7)',
+                    borderColor: 'rgba(15, 27, 54, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'IDR ' + value.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'IDR ' + context.raw.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
