@@ -16,8 +16,8 @@ A Django-based web system simulating the **Revenue Cycle** of a subscription-bas
 | Name                              | Role & Responsibility                                  |
 |-----------------------------------|--------------------------------------------------------|
 | Alysia Dapyaraka                  | 💡 Idea Generation, Brainstorming, & Concept Planning  |
-| Jeny Fattahul Sisca Anjar Aeni   | 🛠️ Admin Page UI Development & Admin Dashboard         |
-| **Riska Melly Agustin**          | 🔧 Backend Development & Customer & Admin /User Interface       |
+| Jeny Fattahul Sisca Anjar Aeni   | 🛠️ Frontend for Admin Page and Backend for Admin Page        |
+| **Riska Melly Agustin**          | 🔧 Frontend for customer & admin page and Backend for Cutomer & Admin page     |
 | Valencia Greace Simeone Damanaik | 🎨 System Design & UI/UX Flow                          |
 
 
